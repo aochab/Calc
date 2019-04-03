@@ -3,8 +3,8 @@
 
 typedef struct tagStack
 {
-	char	  cKey;
-	tagStack* pNext;
+	char	  cKey; //value
+	tagStack* pNext; //pointer to the next element
 } Stack;
 
 Stack* InitStack();
