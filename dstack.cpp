@@ -19,15 +19,14 @@ void dRemoveStack( DStack** pStack )
 }
 
 //----------------------------------------------------------------
-//W³o¿enie liczby na stos
+//Insert number on the stack
 void dpush( double x, DStack** pStack )
 {
 	DStack* v = (DStack*)malloc( sizeof( DStack ) );
 	if( v ) // if(v != NULL )
 	{
 		memset( v, 0, sizeof( DStack ) );
-		v->fKey = x;	//(*v).fKey = x;
-						//dowi¹zanie
+		v->fKey = x;			
 		v->pNext = *pStack;
 		*pStack = v;
 	}
@@ -36,7 +35,7 @@ void dpush( double x, DStack** pStack )
 }
 
 //----------------------------------------------------------------
-//Zwróc top stosu i usuñ go z niego
+//Return top and delete
 double dpop( DStack** pStack )
 {
 
@@ -51,7 +50,7 @@ double dpop( DStack** pStack )
 }
 
 //----------------------------------------------------------------
-//Wypisz top stosu
+//return top
 double dtop( DStack* pStack )
 {
 	if( !disEmpty( pStack ) )
@@ -61,7 +60,6 @@ double dtop( DStack* pStack )
 }
 
 //----------------------------------------------------------------
-//Usuniêcie liczby ze stosu
 void ddel( DStack** pStack ) 
 {
 	if( !disEmpty(*pStack) )
@@ -75,7 +73,6 @@ void ddel( DStack** pStack )
 }
 
 //----------------------------------------------------------------
-//Sprawdzenie czy stos jest pusty
 int disEmpty( DStack* pStack )
 {
 	return !pStack;
