@@ -19,7 +19,7 @@ void RemoveStack( Stack** pStack )
 }
 
 //----------------------------------------------------------------
-//W³o¿enie operatora na stos
+//Put operator on the stack
 void push( char c, Stack** pStack )
 {
 	Stack* v = (Stack*)malloc( sizeof( Stack ) );
@@ -27,7 +27,7 @@ void push( char c, Stack** pStack )
 	{
 		memset( v, 0, sizeof( Stack ) );
 		v->cKey = c;	//(*v).cKey = c;
-		//dowi¹zanie
+		//dowiÅ¡zanie
 		v->pNext = *pStack;
 		*pStack = v;
 	}
@@ -36,7 +36,7 @@ void push( char c, Stack** pStack )
 }
 
 //----------------------------------------------------------------
-//Zwróc top stosu i usuñ go z niego
+//Return top of the stack and delete
 char pop( Stack** pStack )
 {
 
@@ -51,7 +51,7 @@ char pop( Stack** pStack )
 }
 
 //----------------------------------------------------------------
-//Wypisz top stosu
+//Return value of the top
 char top( Stack* pStack )
 {
 	if( !isEmpty( pStack ) )
@@ -61,20 +61,18 @@ char top( Stack* pStack )
 }
 
 //----------------------------------------------------------------
-//Usuniêcie operatora ze stosu
 void del( Stack** pStack ) {
 	if( !isEmpty( *pStack ) )
 	{
 		Stack* p = *pStack;
-		*pStack = p->pNext; // *pStack = (*pStack)->pNext;
-		free( p ); // mnie gwarantuje NULL-a
+		*pStack = p->pNext; 
+		free( p ); 
 	}
 	else
 		perror( "ERROR del: stack underflow!" );
 }
 
 //----------------------------------------------------------------
-//Sprawdzenie czy stos jest pusty
 int isEmpty( Stack* pStack ) {
 	return !pStack;
 }
