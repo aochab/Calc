@@ -12,21 +12,21 @@ using namespace std;
 
 typedef int unsigned tab[11];
 
-double GetNum(); // wczytanie liczby rzeczywistej
-char GetOper(); //wczytanie operatora
+double GetNum(); 	// read number
+char GetOper(); 	// read operator
 void SkipSpaces();
 int isOper( char c );
 int isDigit( char c );
-void readBraces( Stack** pStack ); // wczytanie nawiasów otwieraj¹cych 
-int prior( char cOper ); // sprawdza priorytet operacji
-double Eval( char oper, double arg1, double arg2 ); // obliczenia
+void readBraces( Stack** pStack ); 
+int prior( char cOper ); 	// check priority
+double Eval( char oper, double arg1, double arg2 ); //Calculations
 double Calc();  
 
 
 int main( int argc, char* argv[] )
 {
-	printf( "Prosze podac wyrazenie \n" );
-	printf( "Wynik: %.02lf \n", Calc() );
+	printf( "Enter the equation \n" );
+	printf( "Result: %.02lf \n", Calc() );
 	_getch();
 	return 0;
 }
@@ -36,11 +36,11 @@ double GetNum()
 {
 	char b;
 	char c;
-	double res = 0; //rezultat
-	int minus = 0; //zmienna znaku liczby
-
+	double res = 0; //result
+	int minus = 0; //1 when the variable is less than 0
+	
 	SkipSpaces();
-	if( ( c = getchar() ) == '-' ) //sprawdŸ czy znak liczby jest ujemny
+	if( ( c = getchar() ) == '-' ) // check minus
 	{
 		SkipSpaces();
 		if( !isDigit( b = getchar() ) )
@@ -50,16 +50,16 @@ double GetNum()
 			return res;
 		}
 		ungetc( b, stdin );
-		minus = 1;				//jeœli tak, info zapisujemy w zmiennej
+		minus = 1; //if variable is less than 0			
 		SkipSpaces();
 	}
 	else ungetc( c, stdin );
 
-	while( isDigit( c = getchar() ) ) //wczytanie znaku i sprawdzenie zy jest znakiem cyfry
+	while( isDigit( c = getchar() ) ) //read char and check if it's a digit
 		res = res * 10 + ( c - '0' );
 	if( c == DOT )
 		{
-			//wczytanie czesci ulamkowej
+			//reading the fractional part
 			double coef = 0.1;
 			while( isDigit( c = getchar() ) )
 			{
@@ -69,8 +69,8 @@ double GetNum()
 		}
 		ungetc( c, stdin );
 
-	if( minus ) //zmiana znaku liczby, jeœli jest ujemna
-		res = -res;  //!!!Tak mi zmieni³
+	if( minus ) 
+		res = -res;  
 
 	return res;
 }
@@ -87,7 +87,7 @@ void SkipSpaces()
 {
 	char c;
 	while( ( c = getchar() ) == ' ' );
-	ungetc( c, stdin ); //odsy³a spacje z powrotem do strumienia wejsciowego
+	ungetc( c, stdin ); //return space on stdin
 }
 
 //----------------------------------------------------------------
@@ -109,7 +109,7 @@ int isOper( char c )
 //----------------------------------------------------------------
 int isDigit( char c )
 {
-	return ( c >= '0' ) && ( c <= '9' ); //zwraca 1 gdy c jest znakiem cyfry lub 0 w przeciwnym przypadku
+	return ( c >= '0' ) && ( c <= '9' ); 
 }
 
 //----------------------------------------------------------------
@@ -145,11 +145,11 @@ double Eval( char oper, double arg1, double arg2 )
 	 case '-' : return arg1 - arg2;
 	 case '*' : return arg1 * arg2;
 	 case '/' : 
-		if( arg2 >= 1e-14 ) //wystarczaj¹co ma³a liczba, ¿eby by³o blisko 0
+		if( arg2 >= 1e-14 ) 
 			return arg1 / arg2;
 		perror("ERROR: division by 0!!!"); 
 		break;
-	 case '^': return pow( arg1, arg2 ); //gdy arg2 jest ca³kowity, nie mo¿na u¿ywaæ pow!
+	 case '^': return pow( arg1, arg2 ); 
 	}
 	return 0;
 }
@@ -158,39 +158,39 @@ double Eval( char oper, double arg1, double arg2 )
 double Calc()
 {
 
-	char c; //zmienna operacji
-	double x;//zmmienna liczbowa
+	char c; //operation
+	double x;//number
 
-	Stack* pStack = InitStack(); //inicjowanie stosu operacji
-	DStack* dpStack = dInitStack(); //inicjowanie stosu liczb
+	Stack* pStack = InitStack(); //init stack of operations
+	DStack* dpStack = dInitStack(); //init stack of numbers
 
-	readBraces( &pStack ); //sprawdŸ spacje
+	readBraces( &pStack ); //read the braces when they are
 	dpush( GetNum(), &dpStack ); //wczytanie liczby i wrzucenie na stos*/
 
 	while( isOper( c = GetOper() ) )
 	{
-		while( c == ')' )//sprawdzamy czy pojedyncza liczba jest otoczona nawiasami
+		while( c == ')' )//check braces
 		{
 			if( top( pStack ) == '(' )
 				 del( &pStack );
 			c = GetOper();
 		}
 
-		while( prior( c ) <= prior( top( pStack ) ) ) //porównanie priorytetu operatorów
+		while( prior( c ) <= prior( top( pStack ) ) ) //compare the priority of operators
 		{
 			x = dpop( &dpStack ); //pobranie arg2
-			dpush( Eval( pop( &pStack ), dpop( &dpStack ), x ), &dpStack ); //W³o¿enie na stos liczb obliczonej wartoœci
+			dpush( Eval( pop( &pStack ), dpop( &dpStack ), x ), &dpStack ); //put the calculated number on the stack
 		}
-		push( c, &pStack ); //W³o¿enie operatora na stos operatorów
+		push( c, &pStack ); //put operator on stack
 
-		readBraces( &pStack ); //SprawdŸ czy spacja otwieraj¹ca
-		dpush( GetNum(), &dpStack ); //ponowne wczytanie liczby i w³o¿enie na stos
+		readBraces( &pStack ); 
+		dpush( GetNum(), &dpStack ); //get number and put on the stack
 
 		while( ( c = GetOper() ) == ')' ) 
 		{
-			while( ( c = pop( &pStack ) ) != '(' ) //wykonujemy dzia³ania, a¿ do zamkniêcia poszczególnych nawiasów
+			while( ( c = pop( &pStack ) ) != '(' ) //Count as long as there are brackets
 			{
-				x = dpop( &dpStack ); //pobranie arg2
+				x = dpop( &dpStack ); 
 				dpush( Eval( c, dpop( &dpStack ), x ), &dpStack );
 			}       
 		}
@@ -203,7 +203,7 @@ double Calc()
 		dpush( Eval( pop( &pStack ), dpop( &dpStack ), x ), &dpStack );
 	}
 
-	double end = dtop( dpStack ); // zapisuje do zmiennej przed usuniêciem wczyszczeniem stosów
+	double end = dtop( dpStack ); //Save result
 
 	RemoveStack( &pStack );
 	dRemoveStack( &dpStack );
